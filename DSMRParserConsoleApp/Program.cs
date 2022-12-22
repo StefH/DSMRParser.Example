@@ -2,6 +2,7 @@
 
 using System.Threading.Channels;
 using AsyncAwaitBestPractices;
+using DSMRParser;
 using DSMRParserConsoleApp.Interfaces;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -13,7 +14,7 @@ public static class Program
 {
     private static readonly CancellationTokenSource CancellationTokenSource = new();
 
-    static void Main(string[] args)
+    private static void Main(string[] args)
     {
         var cancellationToken = CancellationTokenSource.Token;
 
@@ -46,7 +47,7 @@ public static class Program
 
         CancellationTokenSource.Cancel();
 
-        Log.Logger.Error("Ending and waiting 1 second to finalize...");
+        Log.Logger.Error("Stopping application and waiting 1 second to finalize...");
 
         Thread.Sleep(1000);
     }
@@ -58,6 +59,8 @@ public static class Program
 
                 services.AddSingleton(channel.Reader);
                 services.AddSingleton(channel.Writer);
+
+                services.AddSingleton<IDSMRTelegramParserProxy>(new DSMRTelegramParserProxy(new DSMRTelegramParser()));
                 services.AddSingleton<IP1Reader, P1Reader>();
                 services.AddSingleton<ITelegramParser, TelegramParser>();
             })

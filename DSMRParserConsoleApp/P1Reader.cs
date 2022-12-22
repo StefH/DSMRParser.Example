@@ -38,7 +38,7 @@ internal class P1Reader : IP1Reader
         {
             await Task.Delay(500, cancellationToken); // Just wait some time
 
-            _logger.LogInformation("{name} Thread = {ManagedThreadId} : Opening Stream on {port} @ {baudrate}", nameof(P1Reader), Thread.CurrentThread.ManagedThreadId, port, serialPort.BaudRate);
+            _logger.LogInformation("{name} Thread = {ManagedThreadId} : Opening Stream on {port} @ {baudrate}.", nameof(P1Reader), Thread.CurrentThread.ManagedThreadId, port, serialPort.BaudRate);
 
             serialPort.Open();
 
@@ -46,6 +46,8 @@ internal class P1Reader : IP1Reader
 
             while (!cancellationToken.IsCancellationRequested && serialPort.ReadLine() is { } line)
             {
+                _logger.LogDebug(line);
+
                 if (line.StartsWith('/'))
                 {
                     _stringBuilder.Clear();
@@ -62,7 +64,7 @@ internal class P1Reader : IP1Reader
                 }
             }
 
-            _logger.LogInformation("{name} Thread = {ManagedThreadId} : CancellationRequested, completing channel and closing stream", nameof(P1Reader), Thread.CurrentThread.ManagedThreadId);
+            _logger.LogInformation("{name} Thread = {ManagedThreadId} : CancellationRequested, completing channel and closing stream.", nameof(P1Reader), Thread.CurrentThread.ManagedThreadId);
 
             _writer.Complete();
 
