@@ -1,15 +1,16 @@
-﻿using System.Text;
+﻿using System.IO.Ports;
+using System.Text;
 using System.Threading.Channels;
 using DSMRParserConsoleApp.Interfaces;
 using Microsoft.Extensions.Logging;
-using RJCP.IO.Ports;
 using Stef.Validation;
 
 namespace DSMRParserConsoleApp;
 
 internal class P1Reader : IP1Reader
 {
-    private const string CRLF = "\r\n";
+    private const int BaudRate = 115200;
+    private const string NewLine = "\n";
 
     private readonly ChannelWriter<string> _writer;
     private readonly ILogger<P1Reader> _logger;
@@ -25,31 +26,33 @@ internal class P1Reader : IP1Reader
 
     public async Task StartReadingAsync(CancellationToken cancellationToken = default)
     {
-        var port = SerialPortStream.GetPortNames().First();
-        await using var serialPortStream = new SerialPortStream(port, 115200);
-        using var streamReader = new StreamReader(serialPortStream);
+        var port = SerialPort.GetPortNames().FirstOrDefault();
+        if (port is null)
+        {
+            throw new NotSupportedException("No Serial Ports are found.");
+        }
+        
+        var serialPort = new SerialPort(port, BaudRate);
 
         await Task.Run(async () =>
         {
             await Task.Delay(500, cancellationToken); // Just wait some time
 
-            _logger.LogInformation("{name} Thread = {ManagedThreadId} : Opening Stream on {port} @ {baudrate}", nameof(P1Reader), Thread.CurrentThread.ManagedThreadId, port, serialPortStream.BaudRate);
+            _logger.LogInformation("{name} Thread = {ManagedThreadId} : Opening Stream on {port} @ {baudrate}", nameof(P1Reader), Thread.CurrentThread.ManagedThreadId, port, serialPort.BaudRate);
 
-            serialPortStream.Open();
+            serialPort.Open();
 
             _logger.LogInformation("{name} Thread = {ManagedThreadId} : Reading Lines", nameof(P1Reader), Thread.CurrentThread.ManagedThreadId);
 
-            while (!cancellationToken.IsCancellationRequested && await streamReader.ReadLineAsync(cancellationToken) is { } line)
+            while (!cancellationToken.IsCancellationRequested && serialPort.ReadLine() is { } line)
             {
-                _logger.LogDebug(line);
-
                 if (line.StartsWith('/'))
                 {
                     _stringBuilder.Clear();
                 }
 
                 _stringBuilder.Append(line);
-                _stringBuilder.Append(CRLF);
+                _stringBuilder.Append(NewLine);
 
                 if (line.StartsWith('!'))
                 {
@@ -63,8 +66,9 @@ internal class P1Reader : IP1Reader
 
             _writer.Complete();
 
-            serialPortStream.Close();
-            await serialPortStream.DisposeAsync();
+            serialPort.Close();
+            serialPort.Dispose();
+
         }, cancellationToken);
     }
 }

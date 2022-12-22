@@ -28,7 +28,7 @@ internal class TelegramParser : ITelegramParser
             
             if (_parser.TryParse(message, out var tel))
             {
-                _logger.LogInformation("Valid PowerDelivered = {power}", tel.PowerDelivered);
+                _logger.LogInformation("PowerDelivered = {power}", tel.PowerDelivered);
             }
             else
             {

@@ -8,18 +8,19 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+		<PackageReference Include="AsyncAwaitBestPractices" Version="6.0.6" />
 		<PackageReference Include="DSMRParser.Net" Version="1.0.3" />
 		<PackageReference Include="Microsoft.Extensions.Hosting" Version="7.0.0" />
 		<PackageReference Include="ProxyInterfaceGenerator" Version="0.0.27">
 			<PrivateAssets>all</PrivateAssets>
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>
-		<PackageReference Include="SerialPortStream" Version="2.4.0" />
 		<PackageReference Include="Serilog.AspNetCore" Version="4.1.0" />
 		<PackageReference Include="Serilog.Extensions.Logging" Version="3.0.1" />
 		<PackageReference Include="Serilog.Sinks.Async" Version="1.5.0" />
 		<PackageReference Include="Serilog.Sinks.Console" Version="4.0.0" />
 		<PackageReference Include="Stef.Validation" Version="0.1.1" />
+		<PackageReference Include="System.IO.Ports" Version="7.0.0" />
 	</ItemGroup>
 
 </Project>
