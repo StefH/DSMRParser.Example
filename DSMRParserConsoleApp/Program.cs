@@ -13,7 +13,7 @@ public static class Program
 {
     private static readonly CancellationTokenSource CancellationTokenSource = new();
 
-    private static async Task Main(string[] args)
+    private static void Main(string[] args)
     {
         var cancellationToken = CancellationTokenSource.Token;
 
