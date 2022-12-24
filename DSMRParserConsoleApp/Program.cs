@@ -3,6 +3,8 @@
 using System.Threading.Channels;
 using DSMRParser;
 using DSMRParserConsoleApp.Interfaces;
+using DSMRParserConsoleApp.IO;
+using DSMRParserConsoleApp.Services;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Serilog;
@@ -60,9 +62,12 @@ public static class Program
                 services.AddSingleton(channel.Reader);
                 services.AddSingleton(channel.Writer);
 
-                services.AddSingleton<IDSMRTelegramParserProxy>(new DSMRTelegramParserProxy(new DSMRTelegramParser()));
+                services.AddSingleton<ISerialPortFactory, SerialPortFactory>();
                 services.AddSingleton<IP1Reader, P1Reader>();
+
+                services.AddSingleton<IDSMRTelegramParserProxy>(new DSMRTelegramParserProxy(new DSMRTelegramParser()));
                 services.AddSingleton<ITelegramParser, TelegramParser>();
+
                 services.AddSingleton<IProcessor, Processor>();
             })
             .UseSerilog()

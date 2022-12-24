@@ -1,24 +1,23 @@
-﻿using System.IO.Ports;
-using System.Text;
+﻿using System.Text;
 using System.Threading.Channels;
-using DSMRParserConsoleApp.Interfaces;
+using DSMRParserConsoleApp.IO;
 using Microsoft.Extensions.Logging;
 using Stef.Validation;
 
-namespace DSMRParserConsoleApp;
+namespace DSMRParserConsoleApp.Services;
 
 internal class P1Reader : IP1Reader
 {
-    private const int BaudRate = 115200;
-    private const string NewLine = "\n";
-
-    private readonly ChannelWriter<string> _writer;
     private readonly ILogger<P1Reader> _logger;
+    private readonly ISerialPortFactory _factory;
+    private readonly ChannelWriter<string> _writer;
+
     private readonly StringBuilder _stringBuilder;
 
-    public P1Reader(ILogger<P1Reader> logger, ChannelWriter<string> writer)
+    public P1Reader(ILogger<P1Reader> logger, ISerialPortFactory factory, ChannelWriter<string> writer)
     {
         _logger = Guard.NotNull(logger);
+        _factory = Guard.NotNull(factory);
         _writer = Guard.NotNull(writer);
 
         _stringBuilder = new(1024);
@@ -26,19 +25,13 @@ internal class P1Reader : IP1Reader
 
     public async Task StartReadingAsync(CancellationToken cancellationToken = default)
     {
-        var port = SerialPort.GetPortNames().FirstOrDefault();
-        if (port is null)
-        {
-            throw new NotSupportedException("No Serial Ports are found.");
-        }
-        
-        var serialPort = new SerialPort(port, BaudRate);
+        var serialPort = _factory.CreateUsingFirstAvailableSerialPort();
 
         await Task.Run(async () =>
         {
             await Task.Delay(500, cancellationToken); // Just wait some time
 
-            _logger.LogInformation("{name} Thread = {ManagedThreadId} : Opening Stream on {port} @ {baudrate}.", nameof(P1Reader), Thread.CurrentThread.ManagedThreadId, port, serialPort.BaudRate);
+            _logger.LogInformation("{name} Thread = {ManagedThreadId} : Opening Stream on {port} @ {baudrate}.", nameof(P1Reader), Thread.CurrentThread.ManagedThreadId, serialPort.PortName, serialPort.BaudRate);
 
             serialPort.Open();
 
@@ -54,7 +47,7 @@ internal class P1Reader : IP1Reader
                 }
 
                 _stringBuilder.Append(line);
-                _stringBuilder.Append(NewLine);
+                _stringBuilder.Append('\n');
 
                 if (line.StartsWith('!'))
                 {

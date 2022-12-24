@@ -4,7 +4,7 @@ using DSMRParserConsoleApp.Interfaces;
 using Microsoft.Extensions.Logging;
 using Stef.Validation;
 
-namespace DSMRParserConsoleApp;
+namespace DSMRParserConsoleApp.Services;
 
 internal class TelegramParser : ITelegramParser
 {

@@ -1,4 +1,4 @@
-﻿namespace DSMRParserConsoleApp;
+﻿namespace DSMRParserConsoleApp.Services;
 
 internal interface IProcessor
 {

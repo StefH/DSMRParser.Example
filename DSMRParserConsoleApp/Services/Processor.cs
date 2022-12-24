@@ -1,8 +1,7 @@
 ﻿using AsyncAwaitBestPractices;
-using DSMRParserConsoleApp.Interfaces;
 using Serilog;
 
-namespace DSMRParserConsoleApp;
+namespace DSMRParserConsoleApp.Services;
 
 internal class Processor : IProcessor
 {

@@ -1,4 +1,4 @@
-﻿namespace DSMRParserConsoleApp.Interfaces;
+﻿namespace DSMRParserConsoleApp.Services;
 
 internal interface IP1Reader
 {
