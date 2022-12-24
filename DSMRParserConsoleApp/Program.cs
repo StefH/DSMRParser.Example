@@ -27,11 +27,24 @@ public static class Program
         var host = CreateHostBuilder(args).Build();
 
         var processor = host.Services.GetRequiredService<IProcessor>();
-        processor.Run(cancellationToken);
+        try
+        {
+            processor.Run(cancellationToken);
+        }
+        catch
+        {
+            Cancel();
+            return;
+        }
 
         Log.Logger.Error("Press any key to cancel");
         Console.ReadKey();
 
+        Cancel();
+    }
+
+    private static void Cancel()
+    {
         CancellationTokenSource.Cancel();
 
         Log.Logger.Error("Stopping application and waiting 1 second to finalize...");
