@@ -1,7 +1,6 @@
 ﻿// https://dotnetcoretutorials.com/2020/11/24/using-channels-in-net-core-part-2-advanced-channels/
 
 using System.Threading.Channels;
-using AsyncAwaitBestPractices;
 using DSMRParser;
 using DSMRParserConsoleApp.Interfaces;
 using Microsoft.Extensions.DependencyInjection;
@@ -14,7 +13,7 @@ public static class Program
 {
     private static readonly CancellationTokenSource CancellationTokenSource = new();
 
-    private static void Main(string[] args)
+    private static async Task Main(string[] args)
     {
         var cancellationToken = CancellationTokenSource.Token;
 
@@ -27,20 +26,8 @@ public static class Program
 
         var host = CreateHostBuilder(args).Build();
 
-        var reader = host.Services.GetRequiredService<IP1Reader>();
-        var parser = host.Services.GetRequiredService<ITelegramParser>();
-
-        reader.StartReadingAsync(cancellationToken).SafeFireAndForget(e =>
-        {
-            Log.Logger.Fatal(e, "Unable to read.");
-            throw new Exception("Unable to read.", e);
-        });
-
-        parser.StartProcessingAsync(cancellationToken).SafeFireAndForget(e =>
-        {
-            Log.Logger.Fatal(e, "Unable to parse.");
-            throw new Exception("Unable to parse.", e);
-        });
+        var processor = host.Services.GetRequiredService<IProcessor>();
+        processor.Run(cancellationToken);
 
         Log.Logger.Error("Press any key to cancel");
         Console.ReadKey();
@@ -63,6 +50,7 @@ public static class Program
                 services.AddSingleton<IDSMRTelegramParserProxy>(new DSMRTelegramParserProxy(new DSMRTelegramParser()));
                 services.AddSingleton<IP1Reader, P1Reader>();
                 services.AddSingleton<ITelegramParser, TelegramParser>();
+                services.AddSingleton<IProcessor, Processor>();
             })
             .UseSerilog()
     ;
