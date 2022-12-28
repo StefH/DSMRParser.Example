@@ -1,6 +1,4 @@
-﻿using DSMRParserConsoleApp.Interfaces;
-
-namespace DSMRParserConsoleApp.IO;
+﻿namespace DSMRParserConsoleApp.IO;
 
 internal interface ISerialPortFactory
 {

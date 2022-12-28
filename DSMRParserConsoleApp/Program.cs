@@ -8,6 +8,7 @@ using DSMRParserConsoleApp.Services;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Serilog;
+using IDSMRTelegramParserProxy = DSMRParserConsoleApp.Services.IDSMRTelegramParserProxy;
 
 namespace DSMRParserConsoleApp;
 

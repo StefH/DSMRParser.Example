@@ -1,6 +1,6 @@
 ﻿using DSMRParser;
 
-namespace DSMRParserConsoleApp.Interfaces;
+namespace DSMRParserConsoleApp.Services;
 
 [ProxyInterfaceGenerator.Proxy(typeof(DSMRTelegramParser))]
 public partial interface IDSMRTelegramParserProxy
