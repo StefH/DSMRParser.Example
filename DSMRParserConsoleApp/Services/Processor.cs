@@ -1,5 +1,6 @@
 ﻿using AsyncAwaitBestPractices;
 using Serilog;
+using Stef.Validation;
 
 namespace DSMRParserConsoleApp.Services;
 
@@ -10,8 +11,8 @@ internal class Processor : IProcessor
 
     public Processor(IP1Reader reader, ITelegramParser parser)
     {
-        _reader = reader;
-        _parser = parser;
+        _reader = Guard.NotNull(reader);
+        _parser = Guard.NotNull(parser);
     }
 
     public void Run(CancellationToken cancellationToken)
