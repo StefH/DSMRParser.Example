@@ -24,9 +24,9 @@ internal class TelegramParser : ITelegramParser
         {
             _logger.LogInformation("{name} Thread = {ManagedThreadId}", nameof(TelegramParser), Thread.CurrentThread.ManagedThreadId);
 
-            if (_parserProxy.TryParse(message, out var tel))
+            if (_parserProxy.TryParse(message, out var telegram))
             {
-                _logger.LogInformation("PowerDelivered = {power}", tel.PowerDelivered);
+                _logger.LogInformation("PowerDelivered = {power}", telegram.PowerDelivered);
             }
             else
             {
