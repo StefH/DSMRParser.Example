@@ -4,5 +4,5 @@ namespace DSMRParserConsoleApp.IO;
 
 internal interface ISerialPortFactory
 {
-    ISerialPort CreateUsingFirstAvailableSerialPort();
+    ISerialPort CreateUsingFirstAvailableUSBSerialPort();
 }

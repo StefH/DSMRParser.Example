@@ -25,7 +25,7 @@ internal class P1Reader : IP1Reader
 
     public async Task StartReadingAsync(CancellationToken cancellationToken = default)
     {
-        var serialPort = _factory.CreateUsingFirstAvailableSerialPort();
+        var serialPort = _factory.CreateUsingFirstAvailableUSBSerialPort();
 
         await Task.Run(async () =>
         {
