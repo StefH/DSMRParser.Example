@@ -1,6 +1,5 @@
 ﻿using System.Threading.Channels;
 using DSMRParser.Models;
-using DSMRParserConsoleApp.Interfaces;
 using Microsoft.Extensions.Logging;
 using Stef.Validation;
 
